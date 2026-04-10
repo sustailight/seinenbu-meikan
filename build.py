@@ -75,11 +75,14 @@ def get_sheet_data():
             val = row[i] if i < len(row) else ''
             member[header] = val
             
-        # 画像URLの変換処理 (Google Driveの open?id= を表示用の uc?id= に置換)
+        # 画像URLの変換処理 (Google Driveの open?id= を表示用のフォーマットに置換)
         img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '')
         if img_url and 'open?id=' in img_url:
-            img_url = img_url.replace('open?id=', 'uc?id=')
-            img_url += f"&v={timestamp_str}" # キャッシュ化回避用クエリ追記
+            file_id = img_url.split('open?id=')[1]
+            # 直リンクがサードパーティcookie制限でブロックされるのを防ぐため thumbnail API を使用
+            img_url = f"https://drive.google.com/thumbnail?id={file_id}&sz=w800"
+            # それでもキャッシュさせたい場合は付け足す
+            img_url += f"&v={timestamp_str}"
             member['⑧あなたらしさが伝わるベストショット📷'] = img_url
             
         # UIからタイムスタンプ列を除外したい為、データ自体から削除してしまう（任意）
