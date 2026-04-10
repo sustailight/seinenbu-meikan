@@ -8,8 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- 背景に躍動感をつけるための要素 -->
+    <div class="bg-animation"></div>
+
     <section class="index-section" id="top">
-        <h1>青年部名鑑</h1>
+        <h1>青年部<br><span style="color:#fff; font-size:1.5rem;">名鑑</span></h1>
         <div class="member-grid">
             {% for member in members %}
             <a href="#member-{{ loop.index }}" class="member-link">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</a>
@@ -20,19 +23,22 @@
     <div class="scroll-container">
         {% for member in members %}
         <section class="member-slide" id="member-{{ loop.index }}">
-            <div class="member-card">
+            
+            {% set img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '') %}
+            <!-- 画像がない人には別のスタイルを当てるためのクラス付与 -->
+            <div class="member-card {% if not img_url %}no-image-mode{% endif %}">
+                
+                {% if img_url %}
                 <div class="member-image-wrapper">
-                    {% set img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '') %}
-                    {% if img_url %}
-                        <img src="{{ img_url }}" alt="写真" class="member-image">
-                    {% else %}
-                        <div class="no-image">No Image</div>
-                    {% endif %}
+                    <img src="{{ img_url }}" alt="写真" class="member-image">
                 </div>
+                {% endif %}
                 
                 <div class="member-info">
-                    <h2 class="member-name">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</h2>
-                    <p class="member-title">{{ member.get('③業種（カテゴリ）', '') }} | {{ member.get('②会社名', '') }}</p>
+                    <div class="member-header-titles">
+                        <h2 class="member-name">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</h2>
+                        <p class="member-title">{{ member.get('③業種（カテゴリ）', '') }} | {{ member.get('②会社名', '') }}</p>
+                    </div>
                     
                     <div class="member-detail">
                         <h3>④自慢ポイント</h3>
