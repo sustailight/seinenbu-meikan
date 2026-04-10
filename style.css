@@ -1,0 +1,281 @@
+:root {
+    /* 浜北商工会青年部に準拠したカラーパレット */
+    --primary-color: #00205b; /* ネイビー */
+    --accent-color: #c5a059;  /* ゴールド */
+    --text-color: #333;
+    --card-bg: rgba(255, 255, 255, 0.95); /* 少し透かして背景を見せる */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Serif JP', serif; /* フォーマルな明朝体 */
+    background-color: var(--primary-color);
+    /* 簡易的な和紙/テクスチャ風背景 */
+    background-image: 
+        radial-gradient(#ffffff0a 15%, transparent 16%),
+        radial-gradient(#ffffff0a 15%, transparent 16%);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    color: var(--text-color);
+}
+
+/* スクロールスナップの全体設定 */
+html {
+    scroll-behavior: smooth;
+}
+
+.scroll-container {
+    height: 100vh;
+    overflow-y: scroll;
+    /* 縦方向に対して要素ごとにスナップさせる */
+    scroll-snap-type: y mandatory;
+    /* iOSのバウンススクロールを柔らかく保つ */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* インデックスセクション */
+.index-section {
+    position: relative;
+    min-height: 100vh;
+    padding: 60px 20px;
+    /* この画面にもスナップさせる */
+    scroll-snap-align: start;
+    text-align: center;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.index-section h1 {
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+    color: var(--accent-color);
+    letter-spacing: 0.1em;
+}
+
+.member-grid {
+    display: grid;
+    /* スマホで2列くらい、PCで多めになるレスポンシブ */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.member-link {
+    display: block;
+    padding: 15px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid rgba(197, 160, 89, 0.5); /* ゴールドを薄く */
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.member-link:hover, .member-link:active {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* メンバーごとのスライド（1人1画面） */
+.member-slide {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    /* ここにピタッと止まる */
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.member-card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 450px;
+    height: 90vh; /* 上下に少し余白を開ける */
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 写真領域：画面のレイアウトを固定するため高さを固定（全体の45%） */
+.member-image-wrapper {
+    width: 100%;
+    height: 45%;
+    position: relative;
+    background: #e0e0e0;
+}
+
+.member-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #888;
+}
+
+/* 情報領域 */
+.member-info {
+    padding: 25px 20px;
+    flex: 1;
+    overflow-y: auto; /* 万が一はみ出た場合はカード内スクロール */
+}
+
+.member-name {
+    font-size: 1.6rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.nickname {
+    font-size: 1.1rem;
+    color: #666;
+    font-weight: normal;
+}
+
+.member-title {
+    font-size: 0.95rem;
+    font-family: sans-serif;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.member-detail {
+    margin-bottom: 20px;
+}
+
+.member-detail h3 {
+    font-size: 1.05rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    display: inline-block;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+/* テキスト保護（3行でカット） */
+.text-clamp {
+    font-size: 0.95rem;
+    font-family: sans-serif;
+    line-height: 1.6;
+    color: #444;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* ここで3行に制限 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.more-btn {
+    display: none; /* JS側で、3行以上ある場合のみ表示する仕組み */
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-top: 8px;
+    text-decoration: underline;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+.scroll-down-hint {
+    position: absolute;
+    bottom: 10px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+    animation: bounce 2s infinite;
+    opacity: 0.7;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+
+/* モーダル（ポップアップ） */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 32, 91, 0.85); /* ダークネイビーの半透明 */
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.is-active {
+    display: flex;
+}
+
+.modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 30px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #999;
+    transition: 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--primary-color);
+}
+
+.modal-title {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-color);
+    font-size: 1.3rem;
+}
+
+.modal-body {
+    font-size: 1rem;
+    font-family: sans-serif;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-wrap; /* 改行をそのまま維持する */
+}

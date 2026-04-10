@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青年部名鑑</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: 明朝体でフォーマルな雰囲気を演出 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- インデックス用セクション -->
+    <section class="index-section" id="top">
+        <h1>青年部名鑑</h1>
+        <div class="member-grid">
+            {% for member in members %}
+            <a href="#member-{{ loop.index }}" class="member-link">{{ member.get('ニックネーム', member.get('氏名', '名称未設定')) }}</a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- スナップスクロール用コンテナ -->
+    <div class="scroll-container">
+        <!-- メンバーごとのスライド（ここが1人1画面になる） -->
+        {% for member in members %}
+        <section class="member-slide" id="member-{{ loop.index }}">
+            <div class="member-card">
+                <!-- 写真領域（画面の約半分を占める） -->
+                <div class="member-image-wrapper">
+                    {% set img_url = member.get('画像URL', '') %}
+                    {% if img_url %}
+                        <img src="{{ img_url }}" alt="{{ member.get('氏名', '') }}の写真" class="member-image">
+                    {% else %}
+                        <div class="no-image">No Image</div>
+                    {% endif %}
+                </div>
+                
+                <!-- 情報領域 -->
+                <div class="member-info">
+                    <h2 class="member-name">{{ member.get('氏名', '') }} <span class="nickname">({{ member.get('ニックネーム', '') }})</span></h2>
+                    <p class="member-title">{{ member.get('役職', '') }} | {{ member.get('会社名', '') }}</p>
+                    
+                    <div class="member-detail">
+                        <h3>事業内容</h3>
+                        <div class="text-clamp js-text-clamp" data-fulltext="{{ member.get('事業内容', '') }}">
+                            {{ member.get('事業内容', '') }}
+                        </div>
+                        <button class="more-btn js-more-btn">もっと見る</button>
+                    </div>
+
+                    <div class="member-detail">
+                        <h3>一言メッセージ</h3>
+                        <div class="text-clamp js-text-clamp" data-fulltext="{{ member.get('一言メッセージ', '') }}">
+                            {{ member.get('一言メッセージ', '') }}
+                        </div>
+                        <button class="more-btn js-more-btn">もっと見る</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 次の人へのナビゲーション（最後の人の場合は非表示にするなど改善可能） -->
+            <a href="#member-{{ loop.index + 1 }}" class="scroll-down-hint">↓</a>
+        </section>
+        {% endfor %}
+    </div>
+
+    <!-- モーダル（もっと見る用のポップアップ） -->
+    <div class="modal js-modal" id="text-modal">
+        <div class="modal-content">
+            <span class="modal-close js-modal-close">&times;</span>
+            <h3 class="modal-title js-modal-title"></h3>
+            <p class="modal-body js-modal-body"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
