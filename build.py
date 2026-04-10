@@ -65,11 +65,11 @@ def get_sheet_data():
             member[header] = val
             
         # 画像URLの変換処理 (Google Driveの open?id= を表示用の uc?id= に置換)
-        img_url = member.get('画像URL', '')
+        img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '')
         if img_url and 'open?id=' in img_url:
             img_url = img_url.replace('open?id=', 'uc?id=')
             img_url += f"&v={timestamp_str}" # キャッシュ化回避用クエリ追記
-            member['画像URL'] = img_url
+            member['⑧あなたらしさが伝わるベストショット📷'] = img_url
             
         # UIからタイムスタンプ列を除外したい為、データ自体から削除してしまう（任意）
         if 'タイムスタンプ' in member:
