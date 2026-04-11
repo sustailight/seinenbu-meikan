@@ -262,39 +262,11 @@ html {
     border-radius: 2px;
 }
 
-.text-clamp {
+.member-text {
     font-size: 0.9rem;
     line-height: 1.6;
     color: #222;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* 追加：もっと見るボタンを押した時に全文表示させる */
-.text-clamp.is-expanded {
-    display: block;
-    -webkit-line-clamp: unset;
-}
-
-/* もっと見るボタン (ポップに) */
-.more-btn {
-    display: none;
-    background: transparent;
-    border: 1px solid var(--accent-color);
-    color: var(--accent-dark);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    margin-top: 6px;
-    font-weight: bold;
-    transition: 0.2s;
-}
-.more-btn:hover { 
-    background: var(--accent-color); 
-    color: #fff;
+    white-space: pre-wrap; /* 改行をそのまま反映 */
 }
 
 /* 固定ナビゲーションボタン (画面左端のタブ風) */

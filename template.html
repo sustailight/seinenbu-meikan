@@ -58,10 +58,7 @@
                     {% if pr_text %}
                     <div class="member-detail">
                         <h3>わが社の自慢</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ pr_text }}">
-                            {{ pr_text }}
-                        </div>
-                        <button class="more-btn js-more-btn">もっと見る</button>
+                        <div class="member-text">{{ pr_text }}</div>
                     </div>
                     {% endif %}
 
@@ -69,10 +66,7 @@
                     {% if hobby %}
                     <div class="member-detail">
                         <h3>熱中していること</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ hobby }}">
-                            {{ hobby }}
-                        </div>
-                        <button class="more-btn js-more-btn">もっと見る</button>
+                        <div class="member-text">{{ hobby }}</div>
                     </div>
                     {% endif %}
 
@@ -80,10 +74,7 @@
                     {% if gourmet %}
                     <div class="member-detail">
                         <h3>おすすめ激うまグルメ</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ gourmet }}">
-                            {{ gourmet }}
-                        </div>
-                        <button class="more-btn js-more-btn">もっと見る</button>
+                        <div class="member-text">{{ gourmet }}</div>
                     </div>
                     {% endif %}
 
@@ -91,10 +82,7 @@
                     {% if consult %}
                     <div class="member-detail">
                         <h3>こんな相談のれます！</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ consult }}">
-                            {{ consult }}
-                        </div>
-                        <button class="more-btn js-more-btn">もっと見る</button>
+                        <div class="member-text">{{ consult }}</div>
                     </div>
                     {% endif %}
                 </div>

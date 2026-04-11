@@ -1,24 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // もっと見るボタン (その場で展開するインライン開閉)
-    const textClamps = document.querySelectorAll('.js-text-clamp');
-
-    textClamps.forEach(clamp => {
-        // コンテンツがコンテナより大きい場合にもっと見るボタンを表示
-        if (clamp.scrollHeight > clamp.clientHeight) {
-            const btn = clamp.nextElementSibling;
-            if (btn && btn.classList.contains('js-more-btn')) {
-                btn.style.display = 'inline-block';
-                btn.addEventListener('click', () => {
-                    const isExpanded = clamp.classList.toggle('is-expanded');
-                    if (isExpanded) {
-                        btn.textContent = '閉じる';
-                    } else {
-                        btn.textContent = 'もっと見る';
-                    }
-                });
-            }
-        }
-    });
 
     // ニックネームの文字サイズ自動縮小（画像枠に収めるため）
     const fitTexts = document.querySelectorAll('.js-fit-text');
