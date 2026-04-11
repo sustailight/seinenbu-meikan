@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>青年部名鑑</title>
+    <title>浜北商工会 青年部名鑑 -The Digital-</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -18,7 +18,11 @@
 
     <div class="scroll-container" id="scroll-container">
         <section class="index-section" id="top">
-            <h1>青年部<br><span style="color:var(--accent-color); font-size:1.5rem;">つながり名鑑</span></h1>
+            <h1>
+                <span style="font-size:1.3rem; opacity: 0.9;">浜北商工会</span><br>
+                青年部名鑑<br>
+                <span style="color:var(--accent-color); font-size:1.6rem; letter-spacing: 0.05em;">-The Digital-</span>
+            </h1>
             <div class="member-grid">
                 {% for member in members %}
                 <a href="#member-{{ loop.index }}" class="member-link">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</a>
@@ -100,13 +104,7 @@
         {% endfor %}
     </div>
 
-    <div class="modal js-modal" id="text-modal">
-        <div class="modal-content">
-            <span class="modal-close js-modal-close">&times;</span>
-            <h3 class="modal-title js-modal-title"></h3>
-            <p class="modal-body js-modal-body"></p>
-        </div>
-    </div>
+
 
     <script src="script.js"></script>
 </body>
