@@ -29,9 +29,12 @@
         <section class="member-slide slide-panel" id="member-{{ loop.index }}" data-index="{{ loop.index }}">
             
             {% set img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '') %}
-            <div class="member-card {% if not img_url %}no-image-mode{% endif %}">
+            {% if not img_url %}
+                {% set img_url = './hiryukun.JPG' %}
+            {% endif %}
+            
+            <div class="member-card">
                 
-                {% if img_url %}
                 <div class="member-image-wrapper">
                     <img src="{{ img_url }}" alt="写真" class="member-image">
                     <!-- 画像下部のオーバーレイ部分 -->
@@ -39,18 +42,12 @@
                         <div class="nickname-text js-fit-text">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</div>
                     </div>
                 </div>
-                {% endif %}
                 
                 <div class="member-info">
                     <div class="member-header-titles">
-                        <!-- 画像が無い場合はここに大きく名前を出す -->
-                        {% if not img_url %}
-                        <h2 class="member-name-noimg js-fit-text">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</h2>
-                        {% else %}
                         <h2 class="member-name">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</h2>
-                        {% endif %}
-                        
-                        <p class="member-title">{{ member.get('③業種（カテゴリ）', '') }} | {{ member.get('②会社名', '') }}</p>
+                        <hr class="gold-divider">
+                        <p class="member-title">{{ member.get('②会社名', '') }} <span class="member-category">/ {{ member.get('③業種（カテゴリ）', '') }}</span></p>
                     </div>
                     
                     {% set pr_text = member.get('④「わが社」をひとことで自慢してください！', '') %}
