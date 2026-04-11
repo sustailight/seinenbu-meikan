@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // もっと見るボタンとモーダル
+    // もっと見るボタン (その場で展開するインライン開閉)
     const textClamps = document.querySelectorAll('.js-text-clamp');
-    const modal = document.getElementById('text-modal');
-    const modalTitle = document.querySelector('.js-modal-title');
-    const modalBody = document.querySelector('.js-modal-body');
-    const modalClose = document.querySelector('.js-modal-close');
 
     textClamps.forEach(clamp => {
         // コンテンツがコンテナより大きい場合にもっと見るボタンを表示
@@ -13,28 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btn && btn.classList.contains('js-more-btn')) {
                 btn.style.display = 'inline-block';
                 btn.addEventListener('click', () => {
-                    const title = clamp.previousElementSibling.textContent;
-                    modalTitle.textContent = title;
-                    modalBody.textContent = clamp.getAttribute('data-fulltext');
-                    modal.classList.add('is-active');
+                    const isExpanded = clamp.classList.toggle('is-expanded');
+                    if (isExpanded) {
+                        btn.textContent = '閉じる';
+                    } else {
+                        btn.textContent = 'もっと見る';
+                    }
                 });
             }
         }
     });
-
-    if(modalClose) {
-        modalClose.addEventListener('click', () => {
-            modal.classList.remove('is-active');
-        });
-    }
-
-    if(modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('is-active');
-            }
-        });
-    }
 
     // ニックネームの文字サイズ自動縮小（画像枠に収めるため）
     const fitTexts = document.querySelectorAll('.js-fit-text');
@@ -48,6 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
             fontSize--;
             el.style.fontSize = fontSize + 'px';
         }
+    });
+
+    // FV（最初の画面）のリンクをクリックしたときのスムーズスクロール
+    const memberLinks = document.querySelectorAll('.member-link');
+    memberLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
     });
 
     // スムーズスクロール & 上下ナビゲーションボタン機能
