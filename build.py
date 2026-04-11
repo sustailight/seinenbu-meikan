@@ -11,7 +11,7 @@ CREDENTIALS_JSON = os.environ.get('GOOGLE_CREDENTIALS_JSON')
 
 # ======== ここを編集してください ========
 # スプレッドシートID（URLの /d/ と /edit の間の文字列）
-SPREADSHEET_ID = '12rdMwtFwLZj8vnxBxMzEVJ8_hcYw6Is8dLom8JL2c1Q'
+SPREADSHEET_ID = '1tZVv9lTnvjS3vtP7GKLdu9sYwSWjgQCSkZikxruPkYI'
 # 取得するシート名と範囲
 RANGE_NAME = 'フォームの回答 1!A:Z' 
 # ======================================
