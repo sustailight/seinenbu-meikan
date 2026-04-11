@@ -1,0 +1,59 @@
+name: Deploy Static Youth Club Directory
+
+on:
+  # メインブランチにプッシュされた時
+  push:
+    branches:
+      - main
+  # GAS(code.gs) からAPI経由で発火された場合
+  repository_dispatch:
+    types: [update-sheet, main, trigger, build] # 想定される名前を網羅する形にする
+  # GitHubの画面から手動で実行したい場合
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build_and_deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build site (Generate index.html)
+        env:
+          # Settings > Secrets and variables > Actions に登録したJSONキーを呼び出す
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+        run: python build.py
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
