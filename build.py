@@ -78,32 +78,40 @@ def get_sheet_data():
             
         # 画像URLの変換処理とローカルダウンロード (セキュリティブロックを完全回避)
         img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '')
-        if img_url and 'open?id=' in img_url:
-            file_id = img_url.split('open?id=')[1]
-            img_dir = 'images'
-            if not os.path.exists(img_dir):
-                os.makedirs(img_dir)
-            local_path = f"{img_dir}/{file_id}.jpg"
-            
-            # まだダウンロードされていなければ取得
-            if not os.path.exists(local_path):
-                dl_url = f"https://drive.google.com/uc?export=download&id={file_id}"
-                try:
-                    r = requests.get(dl_url, allow_redirects=True, timeout=10)
-                    # 画像データが返ってきた場合のみ保存（HTMLの場合は権限エラーの可能性）
-                    if r.status_code == 200 and 'image' in r.headers.get('Content-Type', ''):
-                        with open(local_path, 'wb') as f:
-                            f.write(r.content)
-                    else:
-                        # 失敗時は念のためフォールバックとしてthumbnail APIを使う
-                        pass 
-                except Exception as e:
-                    print(f"画像ダウンロードエラー: {e}")
-            
-            if os.path.exists(local_path):
-                member['⑧あなたらしさが伝わるベストショット📷'] = f"./{local_path}?v={timestamp_str}"
-            else:
-                member['⑧あなたらしさが伝わるベストショット📷'] = f"https://drive.google.com/thumbnail?id={file_id}&sz=w800"
+        if img_url:
+            file_id = None
+            if 'open?id=' in img_url:
+                # フォーム経由の形式: open?id=XXXXXX
+                file_id = img_url.split('open?id=')[1].split('&')[0]
+            elif '/file/d/' in img_url:
+                # 手動で「リンクを取得」からコピペした形式: /file/d/XXXXXX/view
+                file_id = img_url.split('/file/d/')[1].split('/')[0]
+
+            if file_id:
+                img_dir = 'images'
+                if not os.path.exists(img_dir):
+                    os.makedirs(img_dir)
+                local_path = f"{img_dir}/{file_id}.jpg"
+                
+                # まだダウンロードされていなければ取得
+                if not os.path.exists(local_path):
+                    dl_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+                    try:
+                        r = requests.get(dl_url, allow_redirects=True, timeout=10)
+                        # 画像データが返ってきた場合のみ保存（HTMLの場合は権限エラーの可能性）
+                        if r.status_code == 200 and 'image' in r.headers.get('Content-Type', ''):
+                            with open(local_path, 'wb') as f:
+                                f.write(r.content)
+                        else:
+                            # 失敗時は念のためフォールバックとしてthumbnail APIを使う
+                            pass 
+                    except Exception as e:
+                        print(f"画像ダウンロードエラー: {e}")
+                
+                if os.path.exists(local_path):
+                    member['⑧あなたらしさが伝わるベストショット📷'] = f"./{local_path}?v={timestamp_str}"
+                else:
+                    member['⑧あなたらしさが伝わるベストショット📷'] = f"https://drive.google.com/thumbnail?id={file_id}&sz=w800"
             
         # UIからタイムスタンプ列を除外したい為、データ自体から削除してしまう（任意）
         if 'タイムスタンプ' in member:
