@@ -1,5 +1,6 @@
 import os
 import json
+import requests
 from datetime import datetime
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -75,15 +76,34 @@ def get_sheet_data():
             val = row[i] if i < len(row) else ''
             member[header] = val
             
-        # 画像URLの変換処理 (Google Driveの open?id= を表示用のフォーマットに置換)
+        # 画像URLの変換処理とローカルダウンロード (セキュリティブロックを完全回避)
         img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '')
         if img_url and 'open?id=' in img_url:
             file_id = img_url.split('open?id=')[1]
-            # 直リンクがサードパーティcookie制限でブロックされるのを防ぐため thumbnail API を使用
-            img_url = f"https://drive.google.com/thumbnail?id={file_id}&sz=w800"
-            # それでもキャッシュさせたい場合は付け足す
-            img_url += f"&v={timestamp_str}"
-            member['⑧あなたらしさが伝わるベストショット📷'] = img_url
+            img_dir = 'images'
+            if not os.path.exists(img_dir):
+                os.makedirs(img_dir)
+            local_path = f"{img_dir}/{file_id}.jpg"
+            
+            # まだダウンロードされていなければ取得
+            if not os.path.exists(local_path):
+                dl_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+                try:
+                    r = requests.get(dl_url, allow_redirects=True, timeout=10)
+                    # 画像データが返ってきた場合のみ保存（HTMLの場合は権限エラーの可能性）
+                    if r.status_code == 200 and 'image' in r.headers.get('Content-Type', ''):
+                        with open(local_path, 'wb') as f:
+                            f.write(r.content)
+                    else:
+                        # 失敗時は念のためフォールバックとしてthumbnail APIを使う
+                        pass 
+                except Exception as e:
+                    print(f"画像ダウンロードエラー: {e}")
+            
+            if os.path.exists(local_path):
+                member['⑧あなたらしさが伝わるベストショット📷'] = f"./{local_path}?v={timestamp_str}"
+            else:
+                member['⑧あなたらしさが伝わるベストショット📷'] = f"https://drive.google.com/thumbnail?id={file_id}&sz=w800"
             
         # UIからタイムスタンプ列を除外したい為、データ自体から削除してしまう（任意）
         if 'タイムスタンプ' in member:

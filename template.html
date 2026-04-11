@@ -8,73 +8,97 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- 背景に躍動感をつけるための要素 -->
     <div class="bg-animation"></div>
 
-    <section class="index-section" id="top">
-        <h1>青年部<br><span style="color:#fff; font-size:1.5rem;">名鑑</span></h1>
-        <div class="member-grid">
-            {% for member in members %}
-            <a href="#member-{{ loop.index }}" class="member-link">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</a>
-            {% endfor %}
-        </div>
-    </section>
+    <!-- 画面左側に固定するナビゲーションボタン（上下移動） -->
+    <div class="nav-buttons">
+        <button id="nav-up" class="nav-btn">▲<br>戻る</button>
+        <button id="nav-down" class="nav-btn">▼<br>進む</button>
+    </div>
 
-    <div class="scroll-container">
+    <div class="scroll-container" id="scroll-container">
+        <section class="index-section" id="top">
+            <h1>青年部<br><span style="color:var(--accent-color); font-size:1.5rem;">つながり名鑑</span></h1>
+            <div class="member-grid">
+                {% for member in members %}
+                <a href="#member-{{ loop.index }}" class="member-link">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</a>
+                {% endfor %}
+            </div>
+        </section>
         {% for member in members %}
-        <section class="member-slide" id="member-{{ loop.index }}">
+        <section class="member-slide slide-panel" id="member-{{ loop.index }}" data-index="{{ loop.index }}">
             
             {% set img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '') %}
-            <!-- 画像がない人には別のスタイルを当てるためのクラス付与 -->
             <div class="member-card {% if not img_url %}no-image-mode{% endif %}">
                 
                 {% if img_url %}
                 <div class="member-image-wrapper">
                     <img src="{{ img_url }}" alt="写真" class="member-image">
+                    <!-- 画像下部のオーバーレイ部分 -->
+                    <div class="overlay-nickname">
+                        <div class="nickname-text js-fit-text">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</div>
+                    </div>
                 </div>
                 {% endif %}
                 
                 <div class="member-info">
                     <div class="member-header-titles">
+                        <!-- 画像が無い場合はここに大きく名前を出す -->
+                        {% if not img_url %}
+                        <h2 class="member-name-noimg js-fit-text">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</h2>
+                        {% else %}
                         <h2 class="member-name">{{ member.get('①お名前（＆呼ばれたいニックネーム）', '名称未設定') }}</h2>
+                        {% endif %}
+                        
                         <p class="member-title">{{ member.get('③業種（カテゴリ）', '') }} | {{ member.get('②会社名', '') }}</p>
                     </div>
                     
+                    {% set pr_text = member.get('④「わが社」をひとことで自慢してください！', '') %}
+                    {% if pr_text %}
                     <div class="member-detail">
-                        <h3>④自慢ポイント</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ member.get('④「わが社」をひとことで自慢してください！', '') }}">
-                            {{ member.get('④「わが社」をひとことで自慢してください！', '') }}
+                        <h3>わが社の自慢</h3>
+                        <div class="text-clamp js-text-clamp" data-fulltext="{{ pr_text }}">
+                            {{ pr_text }}
                         </div>
                         <button class="more-btn js-more-btn">もっと見る</button>
                     </div>
+                    {% endif %}
 
+                    {% set hobby = member.get('⑤今、これに熱中しています！（趣味・推し）', '') %}
+                    {% if hobby %}
                     <div class="member-detail">
-                        <h3>⑤熱中（趣味・推し）</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ member.get('⑤今、これに熱中しています！（趣味・推し）', '') }}">
-                            {{ member.get('⑤今、これに熱中しています！（趣味・推し）', '') }}
+                        <h3>熱中していること</h3>
+                        <div class="text-clamp js-text-clamp" data-fulltext="{{ hobby }}">
+                            {{ hobby }}
                         </div>
                         <button class="more-btn js-more-btn">もっと見る</button>
                     </div>
+                    {% endif %}
 
+                    {% set gourmet = member.get('⑥おすすめ「激うまグルメ」は？  ', '') %}
+                    {% if gourmet %}
                     <div class="member-detail">
-                        <h3>⑥激うまグルメ</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ member.get('⑥おすすめ「激うまグルメ」は？  ', '') }}">
-                            {{ member.get('⑥おすすめ「激うまグルメ」は？  ', '') }}
+                        <h3>おすすめ激うまグルメ</h3>
+                        <div class="text-clamp js-text-clamp" data-fulltext="{{ gourmet }}">
+                            {{ gourmet }}
                         </div>
                         <button class="more-btn js-more-btn">もっと見る</button>
                     </div>
+                    {% endif %}
 
+                    {% set consult = member.get('⑦こんな相談、のれます！（あなたの得意・ギブ）', '') %}
+                    {% if consult %}
                     <div class="member-detail">
-                        <h3>⑦得意・ギブ</h3>
-                        <div class="text-clamp js-text-clamp" data-fulltext="{{ member.get('⑦こんな相談、のれます！（あなたの得意・ギブ）', '') }}">
-                            {{ member.get('⑦こんな相談、のれます！（あなたの得意・ギブ）', '') }}
+                        <h3>こんな相談のれます！</h3>
+                        <div class="text-clamp js-text-clamp" data-fulltext="{{ consult }}">
+                            {{ consult }}
                         </div>
                         <button class="more-btn js-more-btn">もっと見る</button>
                     </div>
+                    {% endif %}
                 </div>
             </div>
             
-            <a href="#member-{{ loop.index + 1 }}" class="scroll-down-hint">↓</a>
         </section>
         {% endfor %}
     </div>
