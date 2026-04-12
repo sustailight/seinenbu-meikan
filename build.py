@@ -117,6 +117,10 @@ def get_sheet_data():
         if 'タイムスタンプ' in member:
             del member['タイムスタンプ']
             
+        # ニックネームを取得するための正規化（見出し名が変わっても柔軟に取得）
+        # 「①お名前...」か「ニックネーム」という名前の列から値を取得
+        member['display_nickname'] = member.get('ニックネーム') or member.get('①お名前（＆呼ばれたいニックネーム）') or '名称未設定'
+            
         members.append(member)
         
     return members
