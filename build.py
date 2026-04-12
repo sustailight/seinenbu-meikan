@@ -44,34 +44,51 @@ def get_sheet_data():
     headers = values[0]
     members = []
     timestamp_str = datetime.now().strftime('%Y%m%d%H%M')
+
+    # デバッグ用に取得したヘッダーを表示
+    print(f"Headers found: {headers}")
     
     for row in values[1:]:
-        # 行の長さを見出しに合わせる
         row_data = row + [''] * (len(headers) - len(row))
-        member = dict(zip(headers, row_data))
+        member_raw = dict(zip(headers, row_data))
+        member = {}
         
-        # --- 表示用データのマッピング（新シートの正確な見出し名に準拠） ---
+        # --- 超堅牢なマッピング（キーワード部分一致で探す） ---
         
-        # 1. ニックネーム（写真の上に表示）
-        member['display_nickname'] = member.get('①呼ばれたいニックネーム') or member.get('ニックネーム') or '名称未設定'
-        
-        # 2. 氏名（カード中央）
-        member['display_name'] = member.get('氏名') or '氏名未登録'
-        
+        # 1. ニックネーム
+        for k, v in member_raw.items():
+            if 'ニックネーム' in k:
+                member['display_nickname'] = v
+                break
+        if not member.get('display_nickname'): member['display_nickname'] = '名称未設定'
+
+        # 2. 氏名
+        for k, v in member_raw.items():
+            if k == '氏名' or 'お名前' in k:
+                member['display_name'] = v
+                break
+        if not member.get('display_name'): member['display_name'] = '氏名未登録'
+
         # 3. 会社名 / 業種
-        member['display_company'] = member.get('②会社名') or ''
-        member['display_industry'] = member.get('③業種（カテゴリ）') or ''
+        for k, v in member_raw.items():
+            if '会社名' in k: member['display_company'] = v
+            if '業種' in k: member['display_industry'] = v
         
         # 4. 詳細項目
-        member['pr_text'] = member.get('④「わが社」をひとことで自慢してください！') or ''
-        member['hobby_text'] = member.get('⑤今、これに熱中しています！（趣味・推し）') or ''
-        member['gourmet_text'] = member.get('⑥おすすめ「激うまグルメ」は？  ') or ''
-        member['consult_text'] = member.get('⑦こんな相談、のれます！（あなたの得意・ギブ）') or ''
+        for k, v in member_raw.items():
+            if '自慢' in k: member['pr_text'] = v
+            if '熱中' in k: member['hobby_text'] = v
+            if 'グルメ' in k: member['gourmet_text'] = v
+            if '相談' in k: member['consult_text'] = v
 
-        # 5. 写真 (⑨あなたらしさが伝わるベストショット📷)
-        img_url = member.get('⑨あなたらしさが伝わるベストショット📷') or ''
-        member['photo_url'] = ''
+        # 5. 写真 (キーワード「ベストショット」か「写真」が含まれる列)
+        img_url = ''
+        for k, v in member_raw.items():
+            if 'ベストショット' in k or '写真' in k:
+                img_url = v
+                break
         
+        member['photo_url'] = ''
         if img_url:
             file_id = None
             if 'open?id=' in img_url:
@@ -84,7 +101,6 @@ def get_sheet_data():
                 if not os.path.exists(img_dir): os.makedirs(img_dir)
                 local_path = f"{img_dir}/{file_id}.jpg"
                 
-                # 自動ダウンロード試行
                 if not os.path.exists(local_path):
                     dl_url = f"https://drive.google.com/uc?export=download&id={file_id}"
                     try:
@@ -96,6 +112,7 @@ def get_sheet_data():
                 if os.path.exists(local_path):
                     member['photo_url'] = f"./{local_path}?v={timestamp_str}"
                 else:
+                    # ダウンロード不可時のフォールバック
                     member['photo_url'] = f"https://drive.google.com/thumbnail?id={file_id}&sz=w800"
             
         members.append(member)
@@ -107,7 +124,6 @@ def main():
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('template.html')
     html_out = template.render(members=members)
-    # BOM付きUTF-8で保存して文字化けをより確実に防ぐ
     with open('index.html', 'w', encoding='utf-8-sig') as f:
         f.write(html_out)
     print("Build Success.")
