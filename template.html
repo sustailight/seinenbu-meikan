@@ -32,14 +32,13 @@
         {% for member in members %}
         <section class="member-slide slide-panel" id="member-{{ loop.index }}" data-index="{{ loop.index }}">
             
-            {% set img_url = member.get('⑧あなたらしさが伝わるベストショット📷', '') %}
-            {% if not img_url %}
-                {% set img_url = './hiryukun.JPG' %}
-            {% endif %}
-            
             <div class="member-card">
                 
                 <div class="member-image-wrapper">
+                    {% set img_url = member.get('photo_url') %}
+                    {% if not img_url %}
+                        {% set img_url = './hiryukun.JPG' %}
+                    {% endif %}
                     <img src="{{ img_url }}" alt="写真" class="member-image">
                     <!-- 画像下部のオーバーレイ部分 -->
                     <div class="overlay-nickname">
