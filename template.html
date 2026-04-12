@@ -10,7 +10,6 @@
 <body>
     <div class="bg-animation"></div>
 
-    <!-- 画面左側に固定するナビゲーションボタン（上下移動） -->
     <div class="nav-buttons">
         <button id="nav-up" class="nav-btn">▲<br>戻る</button>
         <button id="nav-down" class="nav-btn">▼<br>進む</button>
@@ -25,73 +24,65 @@
             </h1>
             <div class="member-grid">
                 {% for member in members %}
-                <a href="#member-{{ loop.index }}" class="member-link">{{ member.get('display_nickname') }}</a>
+                <a href="#member-{{ loop.index }}" class="member-link">{{ member.display_nickname }}</a>
                 {% endfor %}
             </div>
         </section>
+
         {% for member in members %}
         <section class="member-slide slide-panel" id="member-{{ loop.index }}" data-index="{{ loop.index }}">
             
             <div class="member-card">
-                
                 <div class="member-image-wrapper">
-                    {% set img_url = member.get('photo_url') %}
+                    {% set img_url = member.photo_url %}
                     {% if not img_url %}
                         {% set img_url = './hiryukun.JPG' %}
                     {% endif %}
                     <img src="{{ img_url }}" alt="写真" class="member-image">
-                    <!-- 画像下部のオーバーレイ部分 -->
                     <div class="overlay-nickname">
-                        <div class="nickname-text js-fit-text">{{ member.get('display_nickname') }}</div>
+                        <div class="nickname-text js-fit-text">{{ member.display_nickname }}</div>
                     </div>
                 </div>
                 
                 <div class="member-info">
                     <div class="member-header-titles">
-                        <h2 class="member-name">{{ member.get('氏名') or member.get('お名前') or '氏名未登録' }}</h2>
+                        <h2 class="member-name">{{ member.display_name }}</h2>
                         <hr class="gold-divider">
-                        <p class="member-title">{{ member.get('会社名') or member.get('②会社名') or '' }} <span class="member-category">/ {{ member.get('業種（カテゴリ）') or member.get('③業種（カテゴリ）', '') }}</span></p>
+                        <p class="member-title">{{ member.display_company }} <span class="member-category">/ {{ member.display_industry }}</span></p>
                     </div>
                     
-                    {% set pr_text = member.get('わが社の自慢') or member.get('④「わが社」をひとことで自慢してください！', '') %}
-                    {% if pr_text %}
+                    {% if member.pr_text %}
                     <div class="member-detail">
                         <h3>わが社の自慢</h3>
-                        <div class="member-text">{{ pr_text }}</div>
+                        <div class="member-text">{{ member.pr_text }}</div>
                     </div>
                     {% endif %}
 
-                    {% set hobby = member.get('熱中していること') or member.get('⑤今、これに熱中しています！（趣味・推し）', '') %}
-                    {% if hobby %}
+                    {% if member.hobby_text %}
                     <div class="member-detail">
                         <h3>熱中していること</h3>
-                        <div class="member-text">{{ hobby }}</div>
+                        <div class="member-text">{{ member.hobby_text }}</div>
                     </div>
                     {% endif %}
 
-                    {% set gourmet = member.get('おすすめ激うまグルメ') or member.get('⑥おすすめ「激うまグルメ」は？  ', '') %}
-                    {% if gourmet %}
+                    {% if member.gourmet_text %}
                     <div class="member-detail">
                         <h3>おすすめ激うまグルメ</h3>
-                        <div class="member-text">{{ gourmet }}</div>
+                        <div class="member-text">{{ member.gourmet_text }}</div>
                     </div>
                     {% endif %}
 
-                    {% set consult = member.get('こんな相談のれます！') or member.get('⑦こんな相談、のれます！（あなたの得意・ギブ）', '') %}
-                    {% if consult %}
+                    {% if member.consult_text %}
                     <div class="member-detail">
                         <h3>こんな相談のれます！</h3>
-                        <div class="member-text">{{ consult }}</div>
+                        <div class="member-text">{{ member.consult_text }}</div>
                     </div>
                     {% endif %}
                 </div>
             </div>
-            
         </section>
         {% endfor %}
     </div>
-
-
 
     <script src="script.js"></script>
 </body>
