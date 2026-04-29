@@ -49,6 +49,13 @@
                         <h2 class="member-name">{{ member.display_name }}</h2>
                         <hr class="gold-divider">
                         <p class="member-title">{{ member.display_company }} <span class="member-category">/ {{ member.display_industry }}</span></p>
+                        {% if member.birthplace or member.join_date %}
+                        <p class="member-meta">
+                            {% if member.birthplace %}出身地: {{ member.birthplace }}{% endif %}
+                            {% if member.birthplace and member.join_date %} | {% endif %}
+                            {% if member.join_date %}入部: {{ member.join_date }}{% endif %}
+                        </p>
+                        {% endif %}
                     </div>
                     
                     {% if member.pr_text %}
@@ -76,6 +83,13 @@
                     <div class="member-detail">
                         <h3>こんな相談のれます！</h3>
                         <div class="member-text">{{ member.consult_text }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if member.want_to_connect_text %}
+                    <div class="member-detail">
+                        <h3>青年部で繋がりたい人</h3>
+                        <div class="member-text">{{ member.want_to_connect_text }}</div>
                     </div>
                     {% endif %}
                 </div>

@@ -1,0 +1,10 @@
+# Environments
+venv/
+venv2/
+__pycache__/
+
+# Credentials (WARNING: DO NOT COMMIT GCP CREDENTIALS)
+*.json
+
+# Downloaded files
+images/

@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 CREDENTIALS_JSON = os.environ.get('GOOGLE_CREDENTIALS_JSON')
 
 # ======== 設定項目 ========
-SPREADSHEET_ID = '1tZVv9lTnvjS3vtP7GKLdu9sYwSWjgQCSkZikxruPkYI'
+SPREADSHEET_ID = '1t6ORbLCFnlr9_cCEE3A-iBK3PV4W4zAOvlNlLIX6ZDk'
 RANGE_NAME = 'フォームの回答 1!A:Z' 
 # ========================
 
@@ -22,7 +22,7 @@ def get_sheet_data():
             creds_dict, scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
         )
     else:
-        local_json_path = r'C:\Users\suzuk\.antigravity\seinenbu-meikn\stone-citizen-492915-a0-36bd2df513d6.json'
+        local_json_path = os.path.join(os.path.dirname(__file__), 'stone-citizen-492915-a0-36bd2df513d6.json')
         if os.path.exists(local_json_path):
             with open(local_json_path, 'r', encoding='utf-8') as f:
                 creds_dict = json.load(f)
@@ -46,7 +46,6 @@ def get_sheet_data():
     timestamp_str = datetime.now().strftime('%Y%m%d%H%M')
 
     # デバッグ用に取得したヘッダーを表示
-    print(f"Headers found: {headers}")
     
     for row in values[1:]:
         row_data = row + [''] * (len(headers) - len(row))
@@ -64,7 +63,7 @@ def get_sheet_data():
 
         # 2. 氏名
         for k, v in member_raw.items():
-            if k == '氏名' or 'お名前' in k:
+            if '氏名' in k or 'お名前' in k:
                 member['display_name'] = v
                 break
         if not member.get('display_name'): member['display_name'] = '氏名未登録'
@@ -76,10 +75,13 @@ def get_sheet_data():
         
         # 4. 詳細項目
         for k, v in member_raw.items():
+            if '出身地' in k: member['birthplace'] = v
+            if '入部' in k: member['join_date'] = v
             if '自慢' in k: member['pr_text'] = v
             if '熱中' in k: member['hobby_text'] = v
             if 'グルメ' in k: member['gourmet_text'] = v
             if '相談' in k: member['consult_text'] = v
+            if '繋がりたい人' in k: member['want_to_connect_text'] = v
 
         # 5. 写真 (キーワード「ベストショット」か「写真」が含まれる列)
         img_url = ''

@@ -1,13 +1,14 @@
 import sys
 import json
 import logging
+import os
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-creds_json_path = r'd:\ドキュメント\msr\ダウンロード2\stone-citizen-492915-a0-36bd2df513d6.json'
-SPREADSHEET_ID = '12rdMwtFwLZj8vnxBxMzEVJ8_hcYw6Is8dLom8JL2c1Q'
+creds_json_path = os.path.join(os.path.dirname(__file__), 'stone-citizen-492915-a0-36bd2df513d6.json')
+SPREADSHEET_ID = '1t6ORbLCFnlr9_cCEE3A-iBK3PV4W4zAOvlNlLIX6ZDk'
 
 try:
     with open(creds_json_path, 'r', encoding='utf-8') as f:
