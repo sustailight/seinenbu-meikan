@@ -145,7 +145,8 @@ html {
 /* 画像アリのレイアウト */
 .member-image-wrapper {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 0;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
     position: relative;
     background: #000;
     overflow: hidden;
@@ -153,6 +154,9 @@ html {
 }
 
 .member-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;

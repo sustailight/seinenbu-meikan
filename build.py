@@ -135,7 +135,8 @@ def main():
     members = get_sheet_data()
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('template.html')
-    html_out = template.render(members=members)
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    html_out = template.render(members=members, timestamp=timestamp)
     with open('index.html', 'w', encoding='utf-8-sig') as f:
         f.write(html_out)
     print("Build Success.")
