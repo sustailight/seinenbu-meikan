@@ -24,7 +24,7 @@
             </h1>
             <div class="member-grid">
                 {% for member in members %}
-                <a href="#member-{{ loop.index }}" class="member-link">{{ member.display_nickname }}</a>
+                <a href="#member-{{ loop.index }}" class="member-link">{{ member.display_name }}</a>
                 {% endfor %}
             </div>
         </section>
@@ -33,20 +33,18 @@
         <section class="member-slide slide-panel" id="member-{{ loop.index }}" data-index="{{ loop.index }}">
             
             <div class="member-card">
-                <div class="member-image-wrapper">
-                    {% set img_url = member.photo_url %}
-                    {% if not img_url %}
-                        {% set img_url = './hiryukun.JPG' %}
-                    {% endif %}
-                    <img src="{{ img_url }}" alt="写真" class="member-image">
-                    <div class="overlay-nickname">
-                        <div class="nickname-text js-fit-text">{{ member.display_nickname }}</div>
+                    <div class="member-image-wrapper">
+                        {% set img_url = member.photo_url %}
+                        {% if not img_url %}
+                            {% set img_url = './hiryukun.JPG' %}
+                        {% endif %}
+                        <img src="{{ img_url }}" alt="写真" class="member-image">
                     </div>
-                </div>
-                
-                <div class="member-info">
-                    <div class="member-header-titles">
+                    
+                    <div class="member-info">
+                        <div class="member-header-titles">
                         <h2 class="member-name">{{ member.display_name }}</h2>
+                        <p class="member-nickname">{{ member.display_nickname }}</p>
                         <hr class="gold-divider">
                         <p class="member-title">{{ member.display_company }} <span class="member-category">/ {{ member.display_industry }}</span></p>
                         {% if member.birthplace or member.join_date %}

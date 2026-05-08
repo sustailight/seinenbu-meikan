@@ -19,7 +19,10 @@ def get_sheet_data():
     if CREDENTIALS_JSON:
         creds_dict = json.loads(CREDENTIALS_JSON)
         creds = service_account.Credentials.from_service_account_info(
-            creds_dict, scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+            creds_dict, scopes=[
+                'https://www.googleapis.com/auth/spreadsheets.readonly',
+                'https://www.googleapis.com/auth/drive.readonly'
+            ]
         )
     else:
         local_json_path = os.path.join(os.path.dirname(__file__), 'stone-citizen-492915-a0-36bd2df513d6.json')
@@ -27,7 +30,10 @@ def get_sheet_data():
             with open(local_json_path, 'r', encoding='utf-8') as f:
                 creds_dict = json.load(f)
             creds = service_account.Credentials.from_service_account_info(
-                creds_dict, scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+                creds_dict, scopes=[
+                    'https://www.googleapis.com/auth/spreadsheets.readonly',
+                    'https://www.googleapis.com/auth/drive.readonly'
+                ]
             )
 
     if not creds:
@@ -35,6 +41,8 @@ def get_sheet_data():
         return []
 
     service = build('sheets', 'v4', credentials=creds)
+    drive_service = build('drive', 'v3', credentials=creds)
+    
     result = service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
     values = result.get('values', [])
     
@@ -104,12 +112,14 @@ def get_sheet_data():
                 local_path = f"{img_dir}/{file_id}.jpg"
                 
                 if not os.path.exists(local_path):
-                    dl_url = f"https://drive.google.com/uc?export=download&id={file_id}"
                     try:
-                        r = requests.get(dl_url, allow_redirects=True, timeout=10)
-                        if r.status_code == 200 and 'image' in r.headers.get('Content-Type', ''):
-                            with open(local_path, 'wb') as f: f.write(r.content)
-                    except: pass
+                        # Drive APIを使用して画像を直接ダウンロード
+                        content = drive_service.files().get_media(fileId=file_id).execute()
+                        with open(local_path, 'wb') as f:
+                            f.write(content)
+                    except Exception as e:
+                        print(f"Download error for {file_id}: {e}")
+                        pass
                 
                 if os.path.exists(local_path):
                     member['photo_url'] = f"./{local_path}?v={timestamp_str}"
